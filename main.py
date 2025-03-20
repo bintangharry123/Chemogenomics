@@ -9,7 +9,6 @@ from langchain_core.output_parsers import StrOutputParser
 from langchain_core.output_parsers import JsonOutputParser
 from pydantic import BaseModel, Field
 from typing import List, Literal
-import json
 
 # Konfigurasi halaman
 st.set_page_config(page_title="Analisis Mutasi Gen", page_icon="🧬", layout="centered")
