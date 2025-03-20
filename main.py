@@ -44,7 +44,7 @@ elif page == "Detect":
   Drug_input = "Doxorubicine"
   llm = ChatGoogleGenerativeAI(
       model="gemini-1.5-pro",
-      api_key="AIzaSyDLHp0iI79U4URyhy8WoY1XNg0OxLr8kiM",
+      api_key="-",
       temperature=0.5,
       max_tokens=None,
       timeout=None,
