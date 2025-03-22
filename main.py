@@ -184,7 +184,6 @@ elif page == "Detect":
                   st.write("Tidak ada obat dalam protokol ini.")
 
                 # Menampilkan informasi tambahan
-
                 with st.expander("# Informasi Tambahan"):
                  st.write(f"  Instruksi Tambahan: {resp.get('additional_instructions', 'Tidak tersedia')}")
                  st.write(f" Penjelasan: {resp.get('explanation', 'Tidak tersedia')}")
