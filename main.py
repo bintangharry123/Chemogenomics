@@ -22,7 +22,7 @@ page = st.sidebar.selectbox("# ChemoGenomics", ["Home", "Detect", "Documentation
 
 if page == "Home":
     st.session_state.page = "Home"
-    st.image(".venv/cg.png")
+    st.image("image/cg.png")
     st.markdown("<h2 style='text-align: center;'>Analisis Mutasi Gen dengan AI</h2>", unsafe_allow_html=True)  
 
     left, middle, right = st.columns(3)
@@ -314,7 +314,7 @@ elif page == "Documentation":
     # System Workflow
     st.header("🔹 System Workflow")
     st.write("How *ChemoGenomics* works to provide precise chemotherapy recommendations:")
-    st.image(".venv/Workflow.png", caption="Workflow Diagram", use_container_width=True)  # Replace with the path to your workflow diagram image
+    st.image("image/Workflow.png", caption="Workflow Diagram", use_container_width=True)  # Replace with the path to your workflow diagram image
 
     st.markdown(
         """
