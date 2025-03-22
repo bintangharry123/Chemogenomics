@@ -17,8 +17,9 @@ st.set_page_config(page_title="ChemoGenomics", page_icon="🧬", layout="centere
 
 if "page" not in st.session_state:
   st.session_state.page = "Home"
-page = st.sidebar.selectbox("# ChemoGenomics", ["Home", "Detect", "Documentation"], index=["Home", "Detect", "Documentation"].index(st.session_state.page))
 
+
+page = st.sidebar.selectbox("# ChemoGenomics", ["Home", "Detect", "Documentation"], index=["Home", "Detect", "Documentation"].index(st.session_state.page))
 
 if page == "Home":
     st.session_state.page = "Home"
@@ -37,11 +38,11 @@ elif page == "Detect":
   st.session_state.page = "Detect"
   user_input = st.text_input("Enter Gene Mutation Code (separate with commas)", placeholder="Example: A1BG, A1CF, A2M")
 
-if st.button("Gene Analysis", use_container_width=True):
-    if not user_input:  # Jika input kosong
-        st.warning("Silakan masukkan kode mutasi gen terlebih dahulu.")
-    else:
-        input_mutations = [code.strip() for code in user_input.split(",")]
+  if st.button("Gene Analysis", use_container_width=True):
+        if not user_input:  # Jika input kosong
+         st.warning("Silakan masukkan kode mutasi gen terlebih dahulu.")
+        else:
+         input_mutations = [code.strip() for code in user_input.split(",")]
         for code in input_mutations:
                
 
