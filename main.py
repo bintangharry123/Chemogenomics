@@ -19,6 +19,9 @@ st.markdown("""
             </style>""", unsafe_allow_html=True
             )
 
+ 
+def convert_for_download(df):
+    return df.to_csv().encode("utf-8")  
 
 if "page" not in st.session_state:
   st.session_state.page = "Home"
@@ -26,12 +29,25 @@ if "page" not in st.session_state:
 
 with st.sidebar:
     st.image("image/cg.png", width=300)
-    if st.button("Home",use_container_width=True):
+    if st.button("Home",use_container_width=True, key='go_home'):
         st.session_state.page = "Home"
-    if st.button("Detect",use_container_width=True):
+    if st.button("Detect",use_container_width=True, key='go_detect'):
         st.session_state.page = "Detect"
-    if st.button("Documentation",use_container_width=True):
+    if st.button("Documentation",use_container_width=True, key='go doc'):
         st.session_state.page = "Documentation"
+    st.markdown("<br>", unsafe_allow_html=True)
+    st.markdown("<br>", unsafe_allow_html=True)
+    st.markdown("<br>", unsafe_allow_html=True)
+    st.markdown("<br>", unsafe_allow_html=True)
+    st.markdown("<br>", unsafe_allow_html=True)
+    st.markdown("<br>", unsafe_allow_html=True)
+    st.markdown("<br>", unsafe_allow_html=True)
+    st.markdown("<br>", unsafe_allow_html=True)
+    st.markdown("<br>", unsafe_allow_html=True)
+    st.markdown("<br>", unsafe_allow_html=True)
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    st.write("© 2025 ChemoGenomics. All Rights Reserved.")
 
 if st.session_state.page == "Home":
     
@@ -44,7 +60,7 @@ if st.session_state.page == "Home":
     st.markdown("<br>", unsafe_allow_html=True)
     left, middle, right = st.columns(3)
     with middle:
-        if st.button("Detect Now!", use_container_width=True):
+        if st.button("Detect Now!", use_container_width=True, key='detect1'):
             st.session_state.page = "Detect"
             
   
@@ -54,7 +70,7 @@ elif st.session_state.page == "Detect":
   
   user_input = st.text_input("Enter Gene Mutation Code (separate with commas)", placeholder="Example: A1BG, A1CF, A2M")
 
-  if st.button("Start Analysis", use_container_width=True):
+  if st.button("Start Analysis", use_container_width=True, key='analiyze2'):
     if not user_input:  
         st.warning("Please enter the gene mutation code first!")
     else:
@@ -143,7 +159,7 @@ elif st.session_state.page == "Detect":
 
         llm = ChatGoogleGenerativeAI(
             model="gemini-1.5-pro",
-            api_key="AIzaSyBvNFemrUfTXiuZhhKOQTeF1XMmqTFiXBU",
+            api_key="AIzaSyBLc_ymPW_sm6s7fT0GpYH6sYiheMaCxF8",
             temperature=0.5,
             max_tokens=None,
             timeout=None,
@@ -273,16 +289,34 @@ elif st.session_state.page == "Detect":
                                 "Mechanis,": drug["mechanism"],
                                 "Time": drug["time"]
                             }) 
+
+
+                         
                         df_obat = pd.DataFrame(data_obat)
                         st.dataframe(df_obat, hide_index=True)
+                        csv = convert_for_download(df_obat)
+
                         with st.expander("Additional Information"):
                             st.write(f"**Additional Instruction:** {protocol['additional_instructions']}")
                             st.write(f"**Explanation:** {protocol['explanation']}")
                             st.write(f"**Reference:** {protocol['reference']}")
+
                         
-                        st.markdown("---") 
+
                 else:
                     st.warning("There is no protocol available for this gene mutation.")
+                
+                st.download_button(
+                    label="Download Protocol (CSV)",
+                    data=csv,
+                    file_name="protocol.csv",
+                    mime="text/csv",  # Perbaiki mime type ke "text/csv"
+                    icon="📥",  # Gunakan emoji sebagai ikon
+                    key="download_protocol_unique_key"  # Key unik
+                    )
+                        
+                
+
 
             
 
