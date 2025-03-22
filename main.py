@@ -13,6 +13,11 @@ from tensorflow.keras.metrics import MeanSquaredError
 
 
 st.set_page_config(page_title="ChemoGenomics", page_icon="🧬", layout="centered")
+st.markdown("""
+            <style>
+            #GithubIcon {visibility: hidden;} 
+            </style>""", unsafe_allow_html=True
+            )
 
 
 if "page" not in st.session_state:
@@ -253,7 +258,7 @@ elif st.session_state.page == "Detect":
         resp = chain.invoke({
                 "Drug": result
         })
-        
+
         with st.spinner("AI sedang menganalisis mutasi gen..."):
                 if isinstance(resp, dict) and "Protocol" in resp:  
                     st.subheader("**List of Protocols and Drugs**")
