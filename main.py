@@ -19,13 +19,24 @@ if "page" not in st.session_state:
   st.session_state.page = "Home"
 
 
-page = st.sidebar.selectbox("# ChemoGenomics", ["Home", "Detect", "Documentation"], index=["Home", "Detect", "Documentation"].index(st.session_state.page))
+with st.sidebar:
+    st.image("image/cg.png", width=300)
+    if st.button("Home",use_container_width=True):
+        st.session_state.page = "Home"
+    if st.button("Detect",use_container_width=True):
+        st.session_state.page = "Detect"
+    if st.button("Documentation",use_container_width=True):
+        st.session_state.page = "Documentation"
 
-if page == "Home":
-    st.session_state.page = "Home"
+if st.session_state.page == "Home":
+    
     st.image("image/cg.png")
-    st.markdown("<h2 style='text-align: center;'>Analisis Mutasi Gen dengan AI</h2>", unsafe_allow_html=True)  
-
+    st.markdown("<br>", unsafe_allow_html=True)
+    st.markdown(
+    "<h2 style='text-align: center; font-size: 24px;'>Cancer Protocol Recommendations Based on Gene Mutations</h2>", 
+    unsafe_allow_html=True
+    )
+    st.markdown("<br>", unsafe_allow_html=True)
     left, middle, right = st.columns(3)
     with middle:
         if st.button("Detect Now!", use_container_width=True):
@@ -33,12 +44,12 @@ if page == "Home":
             
   
 
-elif page == "Detect":
+elif st.session_state.page == "Detect":
   
-  st.session_state.page = "Detect"
+  
   user_input = st.text_input("Enter Gene Mutation Code (separate with commas)", placeholder="Example: A1BG, A1CF, A2M")
 
-  if st.button("Gene Analysis", use_container_width=True):
+  if st.button("Start Analysis", use_container_width=True):
         if not user_input:  # Jika input kosong
          st.warning("Silakan masukkan kode mutasi gen terlebih dahulu.")
         else:
@@ -276,10 +287,10 @@ elif page == "Detect":
                         st.dataframe(df_obat, hide_index=True)
                         
                         # Tampilkan informasi tambahan
-                        with st.expander("Informasi Tambahan"):
-                            st.write(f"**Instruksi Tambahan:** {protocol['additional_instructions']}")
-                            st.write(f"**Penjelasan:** {protocol['explanation']}")
-                            st.write(f"**Referensi:** {protocol['reference']}")
+                        with st.expander("Additional Information"):
+                            st.write(f"**Additional Instruction:** {protocol['additional_instructions']}")
+                            st.write(f"**Explanation:** {protocol['explanation']}")
+                            st.write(f"**Reference:** {protocol['reference']}")
                         
                         st.markdown("---")  # Garis pemisah antar protokol
                 else:
@@ -287,7 +298,7 @@ elif page == "Detect":
 
             
 
-elif page == "Documentation":
+elif st.session_state.page == "Documentation":
 
 # Konfigurasi halaman
     
