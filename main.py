@@ -253,10 +253,7 @@ elif st.session_state.page == "Detect":
         resp = chain.invoke({
                 "Drug": result
         })
-
-
-
-
+        
         with st.spinner("AI sedang menganalisis mutasi gen..."):
                 if isinstance(resp, dict) and "Protocol" in resp:  
                     st.subheader("**List of Protocols and Drugs**")
