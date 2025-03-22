@@ -13,11 +13,6 @@ from tensorflow.keras.metrics import MeanSquaredError
 
 
 st.set_page_config(page_title="ChemoGenomics", page_icon="🧬", layout="centered")
-st.markdown("""
-            <style>
-            #GithubIcon {visibility: hidden;} 
-            </style>""", unsafe_allow_html=True
-            )
 
  
 def convert_for_download(df):
@@ -186,7 +181,7 @@ elif st.session_state.page == "Detect":
         class ProtocolJsonOutputParser(JsonOutputParser):
             """Parser khusus untuk mem-parsing JSON dengan key 'annotations' berisi list anotasi."""
             def get_format_instructions(self) -> str:
-                # Instruksi format output ke LLM
+               
                 return (
                     "Return a JSON object with a key 'Protocol' that is an array of objects, "
                     "where each object has the following keys: "
@@ -194,7 +189,7 @@ elif st.session_state.page == "Detect":
                 )
             
             def parse(self, text: str):
-                # Tetap menggunakan mekanisme parse bawaan, tapi bisa ditambah error handling
+                
                 return super().parse(text)
             
         parser = JsonOutputParser(pydantic_object=ListProtocol)
@@ -310,9 +305,9 @@ elif st.session_state.page == "Detect":
                     label="Download Protocol (CSV)",
                     data=csv,
                     file_name="protocol.csv",
-                    mime="text/csv",  # Perbaiki mime type ke "text/csv"
-                    icon="📥",  # Gunakan emoji sebagai ikon
-                    key="download_protocol_unique_key"  # Key unik
+                    mime="text/csv",  
+                    icon="📥",  
+                    key="download_protocol_unique_key"  
                     )
                         
                 
