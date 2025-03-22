@@ -264,21 +264,21 @@ elif st.session_state.page == "Detect":
         with st.spinner("AI sedang menganalisis mutasi gen..."):
                 if isinstance(resp, dict) and "Protocol" in resp:  # Pastikan resp adalah dict dan memiliki key "Protocol"
                     
-                    st.subheader("Daftar Protokol dan Obat")
+                    st.subheader("**List of Protocols and Drugs**")
 
                     # Loop melalui setiap protokol
                     for protocol in resp["Protocol"]:
-                        st.markdown(f"### Protokol: {protocol['protocol_name']}")
+                        st.markdown(f"### Protocol's Name: {protocol['protocol_name']}")
                         
                         # Buat DataFrame untuk obat-obatan dalam protokol ini
                         data_obat = []
                         for drug in protocol["drugs"]:
                             data_obat.append({
-                                "Nama Obat": drug["name"],
-                                "Dosis": drug["dose"],
-                                "Rute Pemberian": drug["route"],
-                                "Mekanisme Aksi": drug["mechanism"],
-                                "Jadwal": drug["time"]
+                                "Drug Name": drug["name"],
+                                "Dose": drug["dose"],
+                                "Route": drug["route"],
+                                "Mechanis,": drug["mechanism"],
+                                "Time": drug["time"]
                             })
                         
                         df_obat = pd.DataFrame(data_obat)
