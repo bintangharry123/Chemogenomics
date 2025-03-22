@@ -50,7 +50,7 @@ elif st.session_state.page == "Detect":
   user_input = st.text_input("Enter Gene Mutation Code (separate with commas)", placeholder="Example: A1BG, A1CF, A2M")
 
   if st.button("Start Analysis", use_container_width=True):
-    if not user_input:  # Jika input kosong
+    if not user_input:  
         st.warning("Please enter the gene mutation code first!")
     else:
         input_mutations = [code.strip() for code in user_input.split(",")]
@@ -259,14 +259,9 @@ elif st.session_state.page == "Detect":
 
         with st.spinner("AI sedang menganalisis mutasi gen..."):
                 if isinstance(resp, dict) and "Protocol" in resp:  
-                    
                     st.subheader("**List of Protocols and Drugs**")
-
-                    # Loop melalui setiap protokol
                     for protocol in resp["Protocol"]:
                         st.markdown(f"### Protocol's Name: {protocol['protocol_name']}")
-                        
-                        # Buat DataFrame untuk obat-obatan dalam protokol ini
                         data_obat = []
                         for drug in protocol["drugs"]:
                             data_obat.append({
@@ -275,32 +270,21 @@ elif st.session_state.page == "Detect":
                                 "Route": drug["route"],
                                 "Mechanis,": drug["mechanism"],
                                 "Time": drug["time"]
-                            })
-                        
+                            }) 
                         df_obat = pd.DataFrame(data_obat)
-                        
-                        # Tampilkan tabel obat
                         st.dataframe(df_obat, hide_index=True)
-                        
-                        
-                        # Tampilkan informasi tambahan
                         with st.expander("Additional Information"):
                             st.write(f"**Additional Instruction:** {protocol['additional_instructions']}")
                             st.write(f"**Explanation:** {protocol['explanation']}")
                             st.write(f"**Reference:** {protocol['reference']}")
                         
-                        st.markdown("---")  # Garis pemisah antar protokol
+                        st.markdown("---") 
                 else:
                     st.warning("There is no protocol available for this gene mutation.")
 
             
 
 elif st.session_state.page == "Documentation":
-
-# Konfigurasi halaman
-    
-
-    # Header
     st.title("📖 ChemoGenomics Documentation")
     st.write(
         """
@@ -308,7 +292,7 @@ elif st.session_state.page == "Documentation":
         """
     )
 
-    # Application Features
+   
     st.header("🔹 Application Features")
     st.markdown(
         """
@@ -320,10 +304,9 @@ elif st.session_state.page == "Documentation":
         """
     )
 
-    # System Workflow
     st.header("🔹 System Workflow")
     st.write("How *ChemoGenomics* works to provide precise chemotherapy recommendations:")
-    st.image("image/Workflow.png", caption="Workflow Diagram", use_container_width=True)  # Replace with the path to your workflow diagram image
+    st.image("image/Workflow.png", caption="Workflow Diagram", use_container_width=True)  
 
     st.markdown(
         """
@@ -336,7 +319,7 @@ elif st.session_state.page == "Documentation":
         """
     )
 
-    # Conclusion
+
     st.header("🔹 Conclusion")
     st.markdown(
         """
@@ -350,12 +333,12 @@ elif st.session_state.page == "Documentation":
         """
     )
 
-    # Final Note
+  
     st.info(
         "🔍 *Note:* This system does not replace consultation with a doctor. "
         "Always discuss the recommendations with medical professionals before making clinical decisions."
     )
 
-    # Footer
+
     st.markdown("---")
     st.write("© 2025 ChemoGenomics. All Rights Reserved.")
