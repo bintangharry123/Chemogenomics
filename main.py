@@ -50,95 +50,91 @@ elif st.session_state.page == "Detect":
   user_input = st.text_input("Enter Gene Mutation Code (separate with commas)", placeholder="Example: A1BG, A1CF, A2M")
 
   if st.button("Start Analysis", use_container_width=True):
-        if not user_input:  # Jika input kosong
-         st.warning("Silakan masukkan kode mutasi gen terlebih dahulu.")
-        else:
-         input_mutations = [code.strip() for code in user_input.split(",")]
+    if not user_input:  # Jika input kosong
+        st.warning("Please enter the gene mutation code first!")
+    else:
+        input_mutations = [code.strip() for code in user_input.split(",")]
         for code in input_mutations:
-               
-
-
-                #input_mutations = ["A1BG", "KIF13B", "ALDH9A1"] 
-                def integrated_drug_prediction(input_mutations):
-                    """
-                    Fungsi terintegrasi untuk memprediksi obat berdasarkan mutasi gen.
+            def integrated_drug_prediction(input_mutations):
+                """
+                Fungsi terintegrasi untuk memprediksi obat berdasarkan mutasi gen.
                     
-                    Parameters:
-                    input_mutations (list): List nama gen yang bermutasi (contoh: ["BRAF", "EGFR"])
-                    model (keras.Model): Model neural network yang telah di-trained
+                Parameters:
+                input_mutations (list): List nama gen yang bermutasi (contoh: ["BRAF", "EGFR"])
+                model (keras.Model): Model neural network yang telah di-trained
                     
-                    Returns:
-                    str: Nama obat dengan IC50 terendah yang telah disetujui klinis
-                    """
+                Returns:
+                str: Nama obat dengan IC50 terendah yang telah disetujui klinis
+                """
                 
                     # 1. Baca data referensi gen dan obat
-                    data_gene = "data/gdsc_and_ccle_704_overlapped_cells_mut.csv"
-                    drug_path = "data/drug_names.csv"
-                    clinical_path = "data/data_klinis_obat.csv"
+                data_gene = "data/gdsc_and_ccle_704_overlapped_cells_mut.csv"
+                drug_path = "data/drug_names.csv"
+                clinical_path = "data/data_klinis_obat.csv"
                 
                 # 2. Convert gene names to indices
-                    def convert_gene_names_to_indices(gene_names):
-                        df = pd.read_csv(data_gene)
-                        sample_index = 0
-                        list_index = []
+                def convert_gene_names_to_indices(gene_names):
+                    df = pd.read_csv(data_gene)
+                    sample_index = 0
+                    list_index = []
                         
-                        for gene in gene_names:
-                            result = df[df["Gene"] == gene].index
-                            gene_index = result[0] + 1 if not result.empty else None  # 1-based index
-                            list_index.append(gene_index)
+                    for gene in gene_names:
+                        result = df[df["Gene"] == gene].index
+                        gene_index = result[0] + 1 if not result.empty else None  # 1-based index
+                        list_index.append(gene_index)
                         
-                        return [sample_index, list_index]
+                    return [sample_index, list_index]
                 
                 # 3. Proses konversi indeks gen
-                    sample_index, gene_indices = convert_gene_names_to_indices(input_mutations)
+                sample_index, gene_indices = convert_gene_names_to_indices(input_mutations)
                 
                 # 4. Buat input array untuk model
-                    df_genes = pd.read_csv(data_gene)
-                    n_genes = len(df_genes)
-                    mut_input = np.zeros((1, n_genes), dtype=int)
-                    valid_indices = [idx-1 for idx in gene_indices if idx is not None]
-                    mut_input[sample_index, valid_indices] = 1
+                df_genes = pd.read_csv(data_gene)
+                n_genes = len(df_genes)
+                mut_input = np.zeros((1, n_genes), dtype=int)
+                valid_indices = [idx-1 for idx in gene_indices if idx is not None]
+                mut_input[sample_index, valid_indices] = 1
 
                 # 5. Lakukan prediksi
-                    model = load_model("models/model_final_mut.h5", custom_objects={'mse': MeanSquaredError()})
-                    result = model.predict([mut_input])
-                    result_1 = result[0].reshape(-1, 1)
+                model = load_model("models/model_final_mut.h5", custom_objects={'mse': MeanSquaredError()})
+                result = model.predict([mut_input])
+                result_1 = result[0].reshape(-1, 1)
                 
                 # 6. Normalisasi hasil
-                    def normalize_output(df):
-                        df['Normalized_Result'] = np.where(
-                            df['IC50'] < -1,
-                            np.log2(df['IC50'] + abs(df['IC50'].min()) + 1),
-                            np.log2(df['IC50'] + 1)
-                        )
-                        return df['Normalized_Result']
+                def normalize_output(df):
+                    df['Normalized_Result'] = np.where(
+                        df['IC50'] < -1,
+                        np.log2(df['IC50'] + abs(df['IC50'].min()) + 1),
+                        np.log2(df['IC50'] + 1)
+                    )
+                    return df['Normalized_Result']
                 
-                    result_df = pd.DataFrame(result_1, columns=['IC50'])
-                    normalized_result = normalize_output(result_df)
-                    normalized_result = normalized_result.values[:265].reshape(265, 1)
+                result_df = pd.DataFrame(result_1, columns=['IC50'])
+                normalized_result = normalize_output(result_df)
+                normalized_result = normalized_result.values[:265].reshape(265, 1)
 
                     # 7. Gabung dengan nama obat
-                    drug_names = pd.read_csv(drug_path)
-                    drug_names.columns = ['Drug name']
-                    drug_names = drug_names.iloc[:265]
+                drug_names = pd.read_csv(drug_path)
+                drug_names.columns = ['Drug name']
+                drug_names = drug_names.iloc[:265]
                 
-                    normalized_df = pd.DataFrame(normalized_result, columns=['IC50'])
-                    final_df = pd.concat([drug_names, normalized_df], axis=1)
+                normalized_df = pd.DataFrame(normalized_result, columns=['IC50'])
+                final_df = pd.concat([drug_names, normalized_df], axis=1)
 
                 # 8. Filter dan ranking obat
-                    def proses_data_obat(df_ic50):
-                        df_clinical = pd.read_csv(clinical_path)
+                def proses_data_obat(df_ic50):
+                    df_clinical = pd.read_csv(clinical_path)
                         
-                        df_ic50["Drug name"] = df_ic50["Drug name"].str.strip().str.lower()
-                        df_clinical["Drug name"] = df_clinical["Drug name"].str.strip().str.lower()
+                    df_ic50["Drug name"] = df_ic50["Drug name"].str.strip().str.lower()
+                    df_clinical["Drug name"] = df_clinical["Drug name"].str.strip().str.lower()
                         
-                        df_merged = pd.merge(df_ic50, df_clinical, on="Drug name", how="inner")
-                        df_filtered = df_merged[df_merged["TKO"] == "clinically approved"]
-                        df_sorted = df_filtered.sort_values(by="IC50")
-                        return df_sorted.iloc[0]["Drug name"] if not df_sorted.empty else None 
-                    return proses_data_obat(final_df)
+                    df_merged = pd.merge(df_ic50, df_clinical, on="Drug name", how="inner")
+                    df_filtered = df_merged[df_merged["TKO"] == "clinically approved"]
+                    df_sorted = df_filtered.sort_values(by="IC50")
+                    return df_sorted.iloc[0]["Drug name"] if not df_sorted.empty else None 
+                return proses_data_obat(final_df)
 
-                result = integrated_drug_prediction(input_mutations)
+            result = integrated_drug_prediction(input_mutations)
 
         llm = ChatGoogleGenerativeAI(
             model="gemini-1.5-pro",
@@ -262,7 +258,7 @@ elif st.session_state.page == "Detect":
 
 
         with st.spinner("AI sedang menganalisis mutasi gen..."):
-                if isinstance(resp, dict) and "Protocol" in resp:  # Pastikan resp adalah dict dan memiliki key "Protocol"
+                if isinstance(resp, dict) and "Protocol" in resp:  
                     
                     st.subheader("**List of Protocols and Drugs**")
 
@@ -285,6 +281,7 @@ elif st.session_state.page == "Detect":
                         
                         # Tampilkan tabel obat
                         st.dataframe(df_obat, hide_index=True)
+                        
                         
                         # Tampilkan informasi tambahan
                         with st.expander("Additional Information"):
